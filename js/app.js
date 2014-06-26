@@ -3,7 +3,6 @@ var globalSecret = 101;
 var globalGuessNum  = 101;
 var globalGuessPrev   = 101;
 var globalGuessCount = 0;
-var boolWin = false;
 
 $(document).ready(function(){
 	/*--- start new game on page load ---*/
@@ -21,19 +20,14 @@ $(document).ready(function(){
 		var userGuessBox = $("form").find('#userGuess');
 		var theGuess = userGuessBox.val();
 		
-		if ( !boolWin ) {
-				
-			if (validateInput(theGuess)) { // user hasn't won yet, so loging a guess.
-				console.log("got to make guess");
-				makeGuess(theGuess); // make a guess
-				if ( globalSecret == globalGuessNum ) {
-					boolWin = true;
-					$('#guessButton').val("Click +New Game");
-				}
+		/*--- this is the heart of the game ---*/
+		if (validateInput(theGuess)) { // user hasn't won yet, so loging a guess.
+			console.log("got to make guess");
+			makeGuess(theGuess); // make a guess
+			if ( globalSecret == globalGuessNum ) {
+				userGuessBox.prop("disabled", true);
+				$('#guessButton').val("Click +New Game");
 			}
-
-		} else {
-			alert("Click '+New Game' to start a new game");
 		}
 
 		userGuessBox.val(""); // either way remove the guess from the box
@@ -53,12 +47,12 @@ $(document).ready(function(){
 });
 
 function startNewGame() {
-	boolWin = false;
 	globalGuessCount = 0; // set guess count to 0
 	globalGuessNum = 101;
 	globalGuessPrev = 101; // reset global guess & prevGuess
 	globalSecret = Math.floor(Math.random() * 100) + 1; // reset the secret number
 	
+	$('#userGuess').prop("disabled", false)
 	$('#feedback').text('Make your Guess!'); // reset feedback text
 	$('#guessList').empty(); // remove all guesses
 	$('#count').text("0"); // set guess count on the screen to 0
